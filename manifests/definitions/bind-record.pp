@@ -26,8 +26,9 @@ define bind::record($ensure=present,
     $_owner = $name
   }
 
-  common::concatfilepart {"${zone}.${record_type}.${name}":
+  common::concatfilepart {"bind.30.${zone}.${record_type}.${name}":
     ensure  => $ensure,
+    manage  => true,
     file    => "/etc/bind/pri/${zone}.conf",
     content => template("bind/default-record.erb"),
     notify  => Service["bind9"],
