@@ -24,18 +24,20 @@ define bind::zone($ensure=present,
     $zone_refresh="3h",
     $zone_retry="1h",
     $zone_expiracy="1w",
-    $zone_ns=false,
+    $zone_ns,
     $zone_xfers=false,
     $zone_masters=false) {
 
   common::concatfilepart {"bind.zones.${name}":
     ensure => $ensure,
+    manage => true,
     notify => Service["bind9"],
     file   => "/etc/bind/zones/${name}.conf",
   }
 
   common::concatfilepart {"named.local.zone.${name}":
     ensure  => $ensure,
+    manage  => true,
     notify  => Service["bind9"],
     file    => "/etc/bind/named.conf.local",
     content => "include \"/etc/bind/zones/${name}.conf\";\n",
@@ -69,6 +71,7 @@ define bind::zone($ensure=present,
 
     common::concatfilepart {"bind.00.${name}":
       ensure => $ensure,
+      manage => true,
       file   => "/etc/bind/pri/${name}.conf",
       content => template("bind/zone-header.erb"),
     }
