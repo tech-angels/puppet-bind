@@ -24,12 +24,12 @@ define bind::mx($ensure=present,
     $_owner = $name
   }
 
-  common::concatfilepart{"bind.${name}":
-    file    => "/etc/bind/pri/${zone}",
+  common::concatfilepart{"bind.20.${name}":
+    file    => "/etc/bind/pri/${zone}.conf",
     ensure  => $ensure,
+    manage  => true,
     notify  => Service["bind9"],
-    content => template("bind/mx-record.erb"),
-    require => [Bind::Zone[$zone], Bind::A[$host]],
+    content => template("bind/mx-record.erb");
   }
 }
 
