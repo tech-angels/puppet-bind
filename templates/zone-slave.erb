@@ -1,5 +1,5 @@
 # File managed by puppet
-zone <%=name%> IN {
+zone "<%=name%>" IN {
   type slave;
   <% if zone_masters.is_a?(Array) -%>
   masters { <%= zone_masters.join('; ') -%>; };
@@ -8,4 +8,4 @@ zone <%=name%> IN {
   <% end -%>
   allow-query { any; };
   notify yes;
-}
+};
