@@ -7,7 +7,7 @@ Arguments:
  *$zone*:        Bind::Zone name
  *$owner*:       owner of the Resource Record
  *$host*:        target of the Resource Record
- *$record_type°:  resource record type
+ *$record_type^0:  resource record type
  *$record_class*: resource record class. Default "IN".
  *$ttl*:          Time to Live for the Resource Record. Optional.
 
