@@ -1,0 +1,6 @@
+# File managed by puppet
+zone <%= @name %> IN {
+  type forward;
+  forward only;
+  forwarders { <%= forwarders.join('; ') -%>; }; 
+};

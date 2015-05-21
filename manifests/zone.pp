@@ -19,7 +19,10 @@ define bind::zone (
   $ensure        = present,
   $is_dynamic    = false,
   $is_slave      = false,
+  $is_forward    = false,
+  $forwarders    = [],
   $allow_update  = [],
+  $zone_soa      = '',
   $zone_ttl      = '',
   $zone_contact  = '',
   $zone_serial   = '',
@@ -34,12 +37,18 @@ define bind::zone (
 
   include bind::params
 
+  $zone_real_soa = $zone_soa ? {
+    ''      => $name,
+    default => $zone_soa,
+  }
+
   validate_string($ensure)
   validate_re($ensure, ['present', 'absent'],
               "\$ensure must be either 'present' or 'absent', got '${ensure}'")
 
   validate_bool($is_dynamic)
   validate_bool($is_slave)
+  validate_bool($is_forward)
   validate_array($allow_update)
   validate_string($zone_ttl)
   validate_string($zone_contact)
@@ -49,6 +58,9 @@ define bind::zone (
   validate_string($zone_expiracy)
   validate_string($zone_ns)
   validate_string($zone_origin)
+  if $is_forward {
+    validate_array($forwarders)
+  }
 
   if ($is_slave and $is_dynamic) {
     fail "Zone '${name}' cannot be slave AND dynamic!"
@@ -83,6 +95,11 @@ define bind::zone (
           content => template('bind/zone-slave.erb'),
         }
 ## END of slave
+      } elsif $is_forward {
+        Concat::Fragment["bind.zones.${name}"] {
+          content => template('bind/zone-forward.erb'),
+        }
+## END of forward
       } else {
         validate_re($zone_contact, '^\S+$', "Wrong contact value for ${name}!")
         validate_re($zone_ns, '^\S+$', "Wrong ns value for ${name}!")
